@@ -22,7 +22,7 @@ In order to use the Meraki API, you need to enable the API for your organization
 > Note: You can add your account as Full Organization Admin to your organizations by following the instructions [here](https://documentation.meraki.com/General_Administration/Managing_Dashboard_Access/Managing_Dashboard_Administrators_and_Permissions).
 
 ## Installation/Configuration
-1. Clone this repository with `git clone [repository name]`
+1. Clone this repository with `git clone https://github.com/gve-sw/gve_devnet_meraki_switch_report.git`
 2. Add Meraki API key to environment variables 
 ```python
 API_KEY = "API key goes here"
