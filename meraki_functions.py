@@ -91,3 +91,9 @@ def get_switch_profile(org_id, profile_id, dashboard):
     switch_profile = dashboard.switch.getOrganizationConfigTemplateSwitchProfiles(org_id, profile_id)
 
     return switch_profile
+
+
+def get_device_lldp_cdp(serial, dashboard):
+    device_lldp_cdp = dashboard.devices.getDeviceLldpCdp(serial)
+
+    return device_lldp_cdp

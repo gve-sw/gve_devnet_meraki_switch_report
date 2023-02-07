@@ -23,7 +23,7 @@ from dotenv import load_dotenv
 from pprint import pprint
 from collections import defaultdict
 from datetime import datetime
-from meraki_functions import get_org_id, get_network_id, get_network, get_switch_ports, get_port_statuses, get_device_clients, get_network_devices, get_switch_profile
+from meraki_functions import get_org_id, get_network_id, get_network, get_switch_ports, get_port_statuses, get_device_clients, get_network_devices, get_switch_profile, get_device_lldp_cdp
 
 
 def main(argv):
@@ -105,6 +105,7 @@ def main(argv):
     switch_ports = {}
     switch_clients = {}
     switch_port_statuses = {}
+    switch_ports_lldp = {}
     for switch in switches:
         serial = switch["serial"]
 
@@ -116,6 +117,9 @@ def main(argv):
 
         port_statuses = get_port_statuses(serial, dashboard)
         switch_port_statuses[serial] = port_statuses
+
+        switch_lldp_info = get_device_lldp_cdp(serial, dashboard)
+        switch_ports_lldp[serial] = switch_lldp_info["ports"]
 
     # for each client of the switch, track the mac addresses and ip addresses
     switch_port_client_macs = {}
@@ -156,6 +160,13 @@ def main(argv):
                 client_ips = switch_ports[switch][index]["client_ips"]
             else:
                 client_ips = []
+            if port_id in switch_ports_lldp[switch].keys() and "lldp" in switch_ports_lldp[switch][port_id].keys():
+                if "systemName" in switch_ports_lldp[switch][port_id]["lldp"].keys():
+                    lldp_info = switch_ports_lldp[switch][port_id]["lldp"]["systemName"]
+                else:
+                    lldp_info = "None"
+            else:
+                lldp_info = "None"
             port_report_info = {
                 "portId": port_id,
                 "enabled": enabled,
@@ -164,7 +175,8 @@ def main(argv):
                 "allowedVlans": allowed_vlan,
                 "status": status["status"],
                 "clientMacAddresses": client_macs,
-                "clientIpAddresses": client_ips
+                "clientIpAddresses": client_ips,
+                "lldpInfo": lldp_info
             }
             switch_port_report[switch].append(port_report_info)
 
